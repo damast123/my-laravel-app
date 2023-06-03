@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\KendaraanController;
+use App\Http\Controllers\StockKendaraanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +18,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::resource('kendaraan', KendaraanController::class);
+Route::resource('stokkendaraan', StockKendaraanController::class);
