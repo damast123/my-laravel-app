@@ -20,6 +20,6 @@ class StockKendaraan extends Eloquent
     ];
     public function kendaraan()
     {
-        return $this->belongsTo(Kendaraan::class);
+        return $this->belongsTo(Kendaraan::class, 'kendaraans_id');
     }
 }

@@ -19,12 +19,15 @@ class StockKendaraanRepository implements StockKendaraanRepositoryInterface
 
     public function getAllDataWithRelations()
     {
-        return $this->model->with('kendaraan')->get();
+        $datas = $this->model->with('kendaraan')->get();
+
+        return $datas;
     }
 
     public function getById($id)
     {
-        return $this->model->find($id);
+        $datas = $this->model->with('kendaraan')->where('kendaraans_id',$id)->get();
+        return $datas;
     }
 
     public function create(array $data)

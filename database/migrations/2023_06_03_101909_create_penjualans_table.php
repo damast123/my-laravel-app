@@ -17,7 +17,7 @@ class CreatePenjualansTable extends Migration
             $table->id();
             $table->string('invoice',200)->unique();
             $table->date('tanggal');
-            $table->int('total_barang');
+            $table->int('total_kendaraan');
             $table->double('grand_total');
             $table->timestamps();
         });

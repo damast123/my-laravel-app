@@ -21,16 +21,15 @@ class DetailPenjualan extends Eloquent
         'penjualans_id',
         'jumlah',
         'harga',
-        'subtotal',
     ];
 
     public function kendaraan()
     {
-        return $this->belongsTo(Kendaraan::class);
+        return $this->belongsTo(Kendaraan::class, 'kendaraans_id');
     }
 
     public function penjualan()
     {
-        return $this->belongsTo(Penjualan::class);
+        return $this->belongsTo(Penjualan::class, 'penjualans_id');
     }
 }

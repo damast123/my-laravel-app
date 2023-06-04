@@ -19,7 +19,6 @@ class CreateDetailPenjualansTable extends Migration
             $table->unsignedBigInteger('penjualans_id');
             $table->integer('jumlah');
             $table->double('harga');
-            $table->double('subtotal');
             $table->timestamps();
             $table->foreign('kendaraans_id')->references('id')->on('kendaraans');
             $table->foreign('penjualans_id')->references('id')->on('penjualans');
