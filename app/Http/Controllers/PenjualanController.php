@@ -3,17 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Penjualan;
+use App\Models\StockKendaraan;
+use App\Models\DetailPenjualan;
 use Illuminate\Http\Request;
+use App\Repositories\PenjualanRepository AS PenjualanRepo;
 
 class PenjualanController extends Controller
 {
-    protected $model_mobil;
-    protected $model_motor;
-    public function __construct(Mobil $kendaraan_mobil, Motor $kendaraan_motor)
+    protected $model_penjualan;
+    protected $model_detailpenjualan;
+    protected $model_stock;
+
+    public function __construct(Penjualan $penjualan, StockKendaraan $stock_kendaraan, DetailPenjualan $detail_penjualan)
     {
         // set the model
-        $this->model_mobil = new KendaraanRepo($kendaraan_mobil);
-        $this->model_motor = new KendaraanRepo($kendaraan_motor);
+        $this->model_penjualan = new PenjualanRepo($penjualan);
+        $this->model_detailpenjualan = new PenjualanRepo($detail_penjualan);
+        $this->stock = new PenjualanRepo($stock_kendaraan);
     }
     /**
      * Display a listing of the resource.
@@ -22,7 +28,7 @@ class PenjualanController extends Controller
      */
     public function index()
     {
-        return $this->model_mobil->all();
+        return $this->model_penjualan->all();
     }
     /**
      * Show the form for creating a new resource.
@@ -42,12 +48,24 @@ class PenjualanController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'post_title' => 'required',
-            'post_content' => 'required|max:1000'
+            'invoice' => 'required',
+            'tanggal' => 'required|date',
+            'detail' => 'required|array',
+            'detail.*.jumlah' => 'required|integer',
+            'detail.*.harga' => 'required|numeric',
+            'detail.*.kendaraans_id' => 'required'
         ]);
 
-        // create record and pass in only fields that are fillable
-        return $this->model->create($request->only($this->model->getModel()->fillable));
+        $penjualanData = [
+            'invoice' => $request->input('invoice'),
+            'tanggal' => $request->input('tanggal')
+        ];
+
+        $detailData = $request->input('detail');
+
+        $penjualan = $this->model_penjualan->create($penjualanData, $detailData);
+
+        return response()->json(['message' => 'Penjualan created successfully', 'penjualan' => $penjualan], 201);
     }
     /**
      * Display the specified resource.

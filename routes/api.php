@@ -31,3 +31,4 @@ Route::put('/stokkendaraan/{id}', 'StockKendaraanController@update');
 
 Route::get('/penjualan', 'PenjualanController@index');
 Route::get('/penjualan/{id}', 'PenjualanController@show');
+Route::post('/penjualan', 'PenjualanController@store');

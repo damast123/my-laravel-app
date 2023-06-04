@@ -41,7 +41,7 @@ class StockKendaraanController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'id_barang' => 'required',
+            'kendaraans_id' => 'required',
             'stock' => 'required|min:1'
         ]);
 
@@ -56,7 +56,7 @@ class StockKendaraanController extends Controller
      */
     public function show($id)
     {
-        return $this->model->show($id);
+        return $this->model->getById($id);
     }
     /**
      * Show the form for editing the specified resource.

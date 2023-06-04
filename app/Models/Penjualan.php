@@ -19,12 +19,12 @@ class Penjualan extends Eloquent
     protected $fillable = [
         'invoice',
         'tanggal',
-        'total_barang',
+        'total_kendaraan',
         'grand_total',
     ];
 
     public function detailpenjualan()
     {
-        return $this->hasMany(DetailPenjualan::class);
+        return $this->embedsMany(DetailPenjualan::class);
     }
 }
