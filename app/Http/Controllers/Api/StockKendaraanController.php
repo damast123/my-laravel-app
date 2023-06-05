@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\StockKendaraan;
 use Illuminate\Http\Request;
-use App\Repositories\StockKendaraanRepository AS StockKendaraanRepo;
+use App\Repositories\KendaraanRepository AS KendaraanRepo;
+use Illuminate\Support\Facades\Validator;
 
 class StockKendaraanController extends Controller
 {
@@ -12,7 +14,7 @@ class StockKendaraanController extends Controller
     public function __construct(StockKendaraan $stock_kendaraan)
     {
         // set the model
-        $this->model = new StockKendaraanRepo($stock_kendaraan);
+        $this->model = new KendaraanRepo($stock_kendaraan);
     }
     /**
      * Display a listing of the resource.
@@ -21,17 +23,9 @@ class StockKendaraanController extends Controller
      */
     public function index()
     {
-        return $this->model->getAllDataWithRelations();
+        return $this->model->getAllDataWithRelationsStock();
     }
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -40,10 +34,17 @@ class StockKendaraanController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $validatedData = Validator::make($request->all(), [
             'kendaraans_id' => 'required',
-            'stock' => 'required|min:1'
+            'stock' => 'required|min:0|integer'
         ]);
+
+        if ($validatedData->fails()) {
+            $errors = $validatedData->errors();
+
+            // Return a response with the validation errors
+            return response()->json(['errors' => $errors], 422);
+        }
 
         // create record and pass in only fields that are fillable
         return $this->model->create($request->only($this->model->getModel()->fillable));
@@ -56,18 +57,9 @@ class StockKendaraanController extends Controller
      */
     public function show($id)
     {
-        return $this->model->getById($id);
+        return $this->model->getByIdStock($id);
     }
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Post $post)
-    {
-        //
-    }
+
     /**
      * Update the specified resource in storage.
      *
