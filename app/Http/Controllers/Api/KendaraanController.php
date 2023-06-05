@@ -1,21 +1,20 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Models\Mobil;
-use App\Models\Motor;
+use App\Http\Controllers\Controller;
+use App\Models\Kendaraan;
 use Illuminate\Http\Request;
 use App\Repositories\KendaraanRepository AS KendaraanRepo;
+use Illuminate\Support\Facades\Validator;
 
 class KendaraanController extends Controller
 {
-    protected $model_mobil;
-    protected $model_motor;
-    public function __construct(Mobil $kendaraan_mobil, Motor $kendaraan_motor)
+    protected $model_kendaraan;
+    public function __construct(Kendaraan $kendaraan)
     {
         // set the model
-        $this->model_mobil = new KendaraanRepo($kendaraan_mobil);
-        $this->model_motor = new KendaraanRepo($kendaraan_motor);
+        $this->model_kendaraan = new KendaraanRepo($kendaraan);
     }
     /**
      * Display a listing of the resource.
@@ -24,8 +23,9 @@ class KendaraanController extends Controller
      */
     public function index()
     {
-        return $this->model_mobil->all();
+        return $this->model_kendaraan->all();
     }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -43,13 +43,22 @@ class KendaraanController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'post_title' => 'required',
-            'post_content' => 'required|max:1000'
+        $validatedData = Validator::make($request->all(), [
+            'tahun_keluaran' => 'required',
+            'warna' => 'required',
+            'harga' => 'required|numeric',
+            'mesin' => 'required'
         ]);
 
+        if ($validatedData->fails()) {
+            $errors = $validatedData->errors();
+
+            // Return a response with the validation errors
+            return response()->json(['errors' => $errors], 422);
+        }
+
         // create record and pass in only fields that are fillable
-        return $this->model->create($request->only($this->model->getModel()->fillable));
+        return $this->model_kendaraan->create($request->only($this->model_kendaraan->getModel()->fillable));
     }
     /**
      * Display the specified resource.
@@ -59,7 +68,7 @@ class KendaraanController extends Controller
      */
     public function show($id)
     {
-        return $this->model->show($id);
+        return $this->model_kendaraan->getById($id);
     }
     /**
      * Show the form for editing the specified resource.
@@ -81,8 +90,8 @@ class KendaraanController extends Controller
     public function update(Request $request, $id)
     {
         // update model and only pass in the fillable fields
-       $this->model->update($request->only($this->model->getModel()->fillable), $id);
-       return $this->model->find($id);
+       $this->model_kendaraan->update($request->only($this->model_kendaraan->getModel()->fillable), $id);
+       return $this->model_kendaraan->find($id);
     }
     /**
      * Remove the specified resource from storage.
@@ -92,6 +101,6 @@ class KendaraanController extends Controller
      */
     public function destroy($id)
     {
-        return $this->model->delete($id);
+        return $this->model_kendaraan->delete($id);
     }
 }
